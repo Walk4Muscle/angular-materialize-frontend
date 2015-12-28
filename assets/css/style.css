@@ -1,0 +1,9 @@
+.sidebar-collapse {
+    position: fixed;
+    left: 10px;
+    top: 14px;
+    z-index: 998;
+}
+ul.side-nav.leftside-navigation {
+    overflow: hidden;
+}
