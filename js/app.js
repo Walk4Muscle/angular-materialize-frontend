@@ -947,13 +947,24 @@ module.exports = 'ui.materialize';
 },{"./angular-materialize":1}],3:[function(require,module,exports){
 'use strict';
 
+module.exports = function($scope, ToastService) {
+	
+	ToastService.show();
+	ToastService.warn();
+	ToastService.error();
+	
+};
+},{}],4:[function(require,module,exports){
+'use strict';
+
 var app = require('angular').module('myApp');
 
 app.controller('TestCtrl', require('./test_todo'));
-},{"./test_todo":4,"angular":32}],4:[function(require,module,exports){
+app.controller('LoginCtrl', require('./LoginController'));
+},{"./LoginController":3,"./test_todo":5,"angular":34}],5:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, TodoService) {
+module.exports = function($scope, TodoService , ToastService) {
 	
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -961,8 +972,11 @@ module.exports = function($scope, TodoService) {
 	$scope.printInput = function() {
 		console.log($scope.inputFieldInput);
 	}
+	ToastService.show();
+	ToastService.warn();
+	ToastService.error();
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var angular = require('angular');
@@ -992,7 +1006,7 @@ var app = angular.module('myApp', [require('./angular-materialize')])
 
 require('./service');
 require('./controller');
-},{"./angular-materialize":2,"./controller":3,"./perfect-scrollbar":6,"./perfect-scrollbar/jquery":7,"./service":29,"angular":32}],6:[function(require,module,exports){
+},{"./angular-materialize":2,"./controller":4,"./perfect-scrollbar":7,"./perfect-scrollbar/jquery":8,"./service":30,"angular":34}],7:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1000,7 +1014,7 @@ require('./controller');
 
 module.exports = require('./src/js/main');
 
-},{"./src/js/main":14}],7:[function(require,module,exports){
+},{"./src/js/main":15}],8:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1008,7 +1022,7 @@ module.exports = require('./src/js/main');
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":8}],8:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":9}],9:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1056,7 +1070,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":14,"../plugin/instances":25}],9:[function(require,module,exports){
+},{"../main":15,"../plugin/instances":26}],10:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1103,7 +1117,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1192,7 +1206,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1268,7 +1282,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1286,7 +1300,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1372,7 +1386,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":9,"./dom":10}],14:[function(require,module,exports){
+},{"./class":10,"./dom":11}],15:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1388,7 +1402,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":16,"./plugin/initialize":24,"./plugin/update":28}],15:[function(require,module,exports){
+},{"./plugin/destroy":17,"./plugin/initialize":25,"./plugin/update":29}],16:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1410,7 +1424,7 @@ module.exports = {
   wheelSpeed: 1
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1437,7 +1451,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":10,"../lib/helper":13,"./instances":25}],17:[function(require,module,exports){
+},{"../lib/dom":11,"../lib/helper":14,"./instances":26}],18:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1502,7 +1516,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":13,"../instances":25,"../update-geometry":26,"../update-scroll":27}],18:[function(require,module,exports){
+},{"../../lib/helper":14,"../instances":26,"../update-geometry":27,"../update-scroll":28}],19:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1610,7 +1624,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":10,"../../lib/helper":13,"../instances":25,"../update-geometry":26,"../update-scroll":27}],19:[function(require,module,exports){
+},{"../../lib/dom":11,"../../lib/helper":14,"../instances":26,"../update-geometry":27,"../update-scroll":28}],20:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1737,7 +1751,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/helper":13,"../instances":25,"../update-geometry":26,"../update-scroll":27}],20:[function(require,module,exports){
+},{"../../lib/helper":14,"../instances":26,"../update-geometry":27,"../update-scroll":28}],21:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1876,7 +1890,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":25,"../update-geometry":26,"../update-scroll":27}],21:[function(require,module,exports){
+},{"../instances":26,"../update-geometry":27,"../update-scroll":28}],22:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -1896,7 +1910,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":25,"../update-geometry":26}],22:[function(require,module,exports){
+},{"../instances":26,"../update-geometry":27}],23:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2010,7 +2024,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":13,"../instances":25,"../update-geometry":26,"../update-scroll":27}],23:[function(require,module,exports){
+},{"../../lib/helper":14,"../instances":26,"../update-geometry":27,"../update-scroll":28}],24:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2183,7 +2197,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":25,"../update-geometry":26,"../update-scroll":27}],24:[function(require,module,exports){
+},{"../instances":26,"../update-geometry":27,"../update-scroll":28}],25:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2232,7 +2246,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":9,"../lib/helper":13,"./handler/click-rail":17,"./handler/drag-scrollbar":18,"./handler/keyboard":19,"./handler/mouse-wheel":20,"./handler/native-scroll":21,"./handler/selection":22,"./handler/touch":23,"./instances":25,"./update-geometry":26}],25:[function(require,module,exports){
+},{"../lib/class":10,"../lib/helper":14,"./handler/click-rail":18,"./handler/drag-scrollbar":19,"./handler/keyboard":20,"./handler/mouse-wheel":21,"./handler/native-scroll":22,"./handler/selection":23,"./handler/touch":24,"./instances":26,"./update-geometry":27}],26:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2343,7 +2357,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/dom":10,"../lib/event-manager":11,"../lib/guid":12,"../lib/helper":13,"./default-setting":15}],26:[function(require,module,exports){
+},{"../lib/dom":11,"../lib/event-manager":12,"../lib/guid":13,"../lib/helper":14,"./default-setting":16}],27:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2474,7 +2488,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":9,"../lib/dom":10,"../lib/helper":13,"./instances":25,"./update-scroll":27}],27:[function(require,module,exports){
+},{"../lib/class":10,"../lib/dom":11,"../lib/helper":14,"./instances":26,"./update-scroll":28}],28:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2581,7 +2595,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":25}],28:[function(require,module,exports){
+},{"./instances":26}],29:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2623,13 +2637,16 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":10,"../lib/helper":13,"./instances":25,"./update-geometry":26,"./update-scroll":27}],29:[function(require,module,exports){
+},{"../lib/dom":11,"../lib/helper":14,"./instances":26,"./update-geometry":27,"./update-scroll":28}],30:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('myApp');
-
+app.constant('APP_SETTINGS',{
+	'server' : 'http://localhost'
+});
 app.service('TodoService', require('./test_todo'));
-},{"./test_todo":30,"angular":32}],30:[function(require,module,exports){
+app.service('ToastService', require('./toastService'));
+},{"./test_todo":31,"./toastService":32,"angular":34}],31:[function(require,module,exports){
 'use strict';
  
 module.exports = function($http,$q) {
@@ -2643,7 +2660,33 @@ module.exports = function($http,$q) {
   	}
   }
 };
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
+'use strict';
+
+module.exports = function() {
+	var duration = 3000,
+		callback = function(){},
+		toastclass = {
+			'info' : 'light-blue lighten-1',
+			'warn' : 'orange darken-1',
+			'error' : 'red darken-1'
+		}
+	return {
+		show: function() {
+			Materialize.toast('test message', duration, toastclass['info'], callback);
+		},
+
+		warn : function(){
+			Materialize.toast('test message', duration, toastclass['warn'], callback);
+
+		},
+		error:function(){
+			Materialize.toast('test message', duration, toastclass['error'], callback);
+			
+		}
+	}
+};
+},{}],33:[function(require,module,exports){
 /**
  * @license AngularJS v1.4.8
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -31662,8 +31705,8 @@ $provide.value("$locale", {
 })(window, document);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":31}]},{},[5]);
+},{"./angular":33}]},{},[6]);

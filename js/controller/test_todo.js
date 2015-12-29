@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($scope, TodoService) {
+module.exports = function($scope, TodoService , ToastService) {
 	
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -8,4 +8,7 @@ module.exports = function($scope, TodoService) {
 	$scope.printInput = function() {
 		console.log($scope.inputFieldInput);
 	}
+	ToastService.show();
+	ToastService.warn();
+	ToastService.error();
 };

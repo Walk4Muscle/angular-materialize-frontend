@@ -7,3 +7,24 @@
 ul.side-nav.leftside-navigation {
     overflow: hidden;
 }
+#slide-out li{
+    line-height: 42px;
+}
+#slide-out a{
+    line-height: 42px;
+    height: 42px;
+}
+#slide-out li a i {
+    line-height: inherit;
+    width: 2rem;
+    font-size: 1.6rem;
+    vertical-align: middle;
+    margin-right: 1rem;
+}
+#slide-out li.selected a{
+    color:#29b6f6;
+}
+#slide-out li.li-hover span{
+    line-height: 42px;
+    height: 42px;
+}
