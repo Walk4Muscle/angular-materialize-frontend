@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($scope, TodoService , ToastService) {
+module.exports = function($scope, TodoService , ToastService ,BaseAPIService,UserService) {
 	
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -11,4 +11,6 @@ module.exports = function($scope, TodoService , ToastService) {
 	ToastService.show();
 	ToastService.warn();
 	ToastService.error();
+	console.log(BaseAPIService.init('user'))
+	UserService.get(1);
 };

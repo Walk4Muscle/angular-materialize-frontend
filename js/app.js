@@ -961,10 +961,10 @@ var app = require('angular').module('myApp');
 
 app.controller('TestCtrl', require('./test_todo'));
 app.controller('LoginCtrl', require('./LoginController'));
-},{"./LoginController":3,"./test_todo":5,"angular":34}],5:[function(require,module,exports){
+},{"./LoginController":3,"./test_todo":5,"angular":35}],5:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, TodoService , ToastService) {
+module.exports = function($scope, TodoService , ToastService ,BaseAPIService,UserService) {
 	
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -975,6 +975,8 @@ module.exports = function($scope, TodoService , ToastService) {
 	ToastService.show();
 	ToastService.warn();
 	ToastService.error();
+	console.log(BaseAPIService.init('user'))
+	UserService.get(1);
 };
 },{}],6:[function(require,module,exports){
 'use strict';
@@ -1006,7 +1008,7 @@ var app = angular.module('myApp', [require('./angular-materialize')])
 
 require('./service');
 require('./controller');
-},{"./angular-materialize":2,"./controller":4,"./perfect-scrollbar":7,"./perfect-scrollbar/jquery":8,"./service":30,"angular":34}],7:[function(require,module,exports){
+},{"./angular-materialize":2,"./controller":4,"./perfect-scrollbar":7,"./perfect-scrollbar/jquery":8,"./service":30,"angular":35}],7:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -2642,11 +2644,25 @@ module.exports = function (element) {
 
 var app = require('angular').module('myApp');
 app.constant('APP_SETTINGS',{
-	'server' : 'http://localhost'
+	'server' : 'http://localhost:8081'
+});
+app.service('BaseAPIService',function(APP_SETTINGS,$http){
+	var URL;
+	return {
+		init:function(path){
+			URL = APP_SETTINGS.server + "/" + path + "/";
+			this.URL = URL;
+			return this;
+		},
+		get:function(id){
+			return $http.get(URL+"/"+id);
+		}
+	}
 });
 app.service('TodoService', require('./test_todo'));
 app.service('ToastService', require('./toastService'));
-},{"./test_todo":31,"./toastService":32,"angular":34}],31:[function(require,module,exports){
+app.service('UserService', require('./userService'));
+},{"./test_todo":31,"./toastService":32,"./userService":33,"angular":35}],31:[function(require,module,exports){
 'use strict';
  
 module.exports = function($http,$q) {
@@ -2687,6 +2703,22 @@ module.exports = function() {
 	}
 };
 },{}],33:[function(require,module,exports){
+'use strict';
+
+module.exports = function(BaseAPIService) {
+	var path = 'user',
+		adapter = BaseAPIService.init(path),
+		callback = function(){};
+	return {
+		get:function(id){
+			console.log(adapter.get(id))
+		},
+		list:function(){
+
+		}
+	}
+};
+},{}],34:[function(require,module,exports){
 /**
  * @license AngularJS v1.4.8
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -31705,8 +31737,8 @@ $provide.value("$locale", {
 })(window, document);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":33}]},{},[6]);
+},{"./angular":34}]},{},[6]);
