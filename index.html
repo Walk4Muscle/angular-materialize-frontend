@@ -12,7 +12,10 @@
 		<!--[if lte IE 8]><script>(function(){var e="abbr,article,aside,audio,canvas,datalist,details,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(','),i=e.length;while(i--){document.createElement(e[i]);}}());</script><![endif]-->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 		<script type="text/javascript" src="js/materialize.min.js"></script>
+		<!-- ui-grid -->
+		<link rel="stylesheet" type="text/css" href="js/angular-ui-grid/ui-grid.css" />
 		<script type="text/javascript" src="js/app.js"></script>
+		<script src="js/angular-ui-grid/ui-grid.js"></script>
 	</head>
 	<body ng-controller="TestCtrl">
 		<!-- header nav start -->
@@ -23,10 +26,10 @@
 						GSAM
 					</a>
 					<!-- <ul id="nav-mobile" class="right hide-on-med-and-down">
-							<li><a href="sass.html"><i class="material-icons">add</i></a></li>
-							<li><a href="badges.html"><i class="material-icons">view_module</i></a></li>
-							<li><a href="collapsible.html"><i class="material-icons">refresh</i></a></li>
-							<li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
+									<li><a href="sass.html"><i class="material-icons">add</i></a></li>
+									<li><a href="badges.html"><i class="material-icons">view_module</i></a></li>
+									<li><a href="collapsible.html"><i class="material-icons">refresh</i></a></li>
+									<li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
 					</ul> -->
 				</div>
 			</nav>
@@ -92,6 +95,10 @@
 			clear="clear"
 			close="close"/>
 			<a class="btn-floating btn-large waves-effect waves-light red" ng-click="printInput()"><i class="material-icons">add</i></a>
+			<!-- ng-table -->
+			<div ui-grid="gridOptions" ui-grid-pagination ui-grid-resize-columns ui-grid-auto-resize auto-grid-height class="grid" style="margin-top:10px;">
+			</div>
+			<button type="button" ng-click="edit(1)" >id</button>
 		</div>
 	</div>
 </body>
