@@ -2643,14 +2643,14 @@ module.exports = function($scope, ToastService) {
 },{}],8:[function(require,module,exports){
 'use strict';
 
-var app = require('angular').module('myApp.Ctrl', ['ui.grid', 'ui.grid.pagination']);
+var app = require('angular').module('myApp.Ctrl', ['ui.grid', 'ui.grid.pagination','ui.grid.autoResize']);
 app.constant('GRID_DEFAULT_OPTIONS', {
-	paginationPageSizes: [10, 50, 75],
+	paginationPageSizes: [10, 25, 50],
 	paginationPageSize: 10,
 	useExternalPagination: false,
 	enableVerticalScrollbar: 0,
-	// enableGridMenu: true,
-	enableGridMenu:false,
+	enableGridMenu: true,
+	// enableGridMenu:false,
 	// rowHeight: 35,
 	paginationOptions: {
 		pageNumber: 1,
@@ -2716,13 +2716,13 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 			name: 'username',
 			field:'username',
 			minWidth: 200,
-			enableHiding: false,
-			enableSorting: false,
+			enableHiding: true,
+			enableSorting: true,
 		}, {
 			name: 'email',
 			minWidth: 200,
-			enableHiding: false,
-			enableSorting: false,
+			enableHiding: true,
+			enableSorting: true,
 		}],
 		onRegisterApi: function(gridApi) {
 			$scope.gridApi = gridApi;

@@ -24,13 +24,13 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 			name: 'username',
 			field:'username',
 			minWidth: 200,
-			enableHiding: false,
-			enableSorting: false,
+			enableHiding: true,
+			enableSorting: true,
 		}, {
 			name: 'email',
 			minWidth: 200,
-			enableHiding: false,
-			enableSorting: false,
+			enableHiding: true,
+			enableSorting: true,
 		}],
 		onRegisterApi: function(gridApi) {
 			$scope.gridApi = gridApi;
