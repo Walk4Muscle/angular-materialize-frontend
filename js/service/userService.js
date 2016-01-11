@@ -20,7 +20,7 @@ module.exports = function(BaseAPIService,$q) {
 			var deferred = $q.defer();
 			adapter.list(params).then(function(data){
 				// console.log(data);
-				deferred.resolve(data);
+				deferred.resolve(data.data);
 			},function(reason){
 				deferred.reject(reason);
 			});

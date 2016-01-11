@@ -1,7 +1,15 @@
 'use strict';
 
 var angular = require('angular');
-var app = angular.module('myApp', [require('./controller'),require('./service'),require('./angular-materialize'),require('./angular-route'),require('./angular-sanitize'),'ui.grid'])
+var app = angular.module('myApp', [
+		require('./controller'),
+		require('./service'),
+		require('./angular-materialize'),
+		require('./angular-route'),
+		require('./angular-sanitize'),
+		require('./angular-datatables'),
+		'ui.grid'
+	])
 	.run(function($rootScope) {
 		window.Ps = require('./perfect-scrollbar/jquery');
 		require('./perfect-scrollbar');

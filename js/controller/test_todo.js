@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, GRID_DEFAULT_OPTIONS, $timeout) {
+module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, GRID_DEFAULT_OPTIONS, $timeout,DTOptionsBuilder, DTColumnBuilder) {
 
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -59,8 +59,8 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 	$scope.getList = function() {
 		UserService.list().then(function(data) {
 			// console.log(data)
-			$scope.gridOptions.data = data.data;
-			$scope.gridOptions.totalItems = data.data.length;
+			$scope.gridOptions.data = data;
+			$scope.gridOptions.totalItems = data.length;
 		}, function(reason) {
 			console.log(reason)
 		});
@@ -79,4 +79,15 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 	$scope.edit = function(id) {
 		console.log($scope.tp);
 	}
+
+	$scope.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+        return UserService.list();
+    }).withPaginationType('full_numbers');
+
+    $scope.dtColumns = [
+        DTColumnBuilder.newColumn('id').withTitle('ID'),
+        DTColumnBuilder.newColumn('username').withTitle('User name'),
+        DTColumnBuilder.newColumn('email').withTitle('Email')
+    ];
+
 };

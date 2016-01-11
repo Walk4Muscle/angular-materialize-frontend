@@ -26,8 +26,6 @@ app.directive('autoGridHeight', function($timeout, $window) {
 		link: function(scope, element, attrs) {
 			// console.log(scope.gridOptions.totalItems);
 			// console.log(scope.gridOptions);
-			console.log(element);
-			console.log($(element).find('.ui-grid-viewport'));
 			var setGridHeight = function() {
 				var dataCount = scope.gridOptions.totalItems;
 				var rowHeight = scope.gridOptions.rowHeight;
@@ -44,5 +42,22 @@ app.directive('autoGridHeight', function($timeout, $window) {
 		}
 	}
 })
-
+.directive('autoGridWidth', function($timeout, $window) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			// console.log(scope.gridOptions.totalItems);
+			// console.log(scope.gridOptions);
+			var setGridHeight = function() {
+			console.log($(element).parent("div").width());
+				
+				// console.log()
+				$(element).width($(element).parent("div").width());
+			};
+			//setGridHeight();          // does not resize the grid
+			$timeout(setGridHeight); // resizes the grid but not the render-container
+			angular.element($window).bind('resize', setGridHeight);
+		}
+	}
+})
 module.exports = 'myApp.Ctrl';
