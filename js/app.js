@@ -5328,6 +5328,56 @@ app.constant('GRID_DEFAULT_OPTIONS', {
 app.controller('TestCtrl', require('./test_todo'));
 app.controller('LoginCtrl', require('./LoginController'));
 
+
+module.exports = 'myApp.Ctrl';
+},{"./LoginController":20,"./test_todo":22,"angular":53}],22:[function(require,module,exports){
+'use strict';
+
+module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, $timeout,DTOptionsBuilder, DTColumnBuilder) {
+
+	// TodoService.getSomething().then(function(data) {
+	// 	console.log(data)
+	// })
+	$scope.printInput = function() {
+		console.log($scope.inputFieldInput);
+	}
+	ToastService.show();
+	ToastService.warn();
+	ToastService.error();
+	console.log(BaseAPIService.init('user'))
+		// UserService.get(1).then(function(data) {
+		// 	console.log(data)
+		// }, function(reason) {
+		// 	console.log(reason)
+		// });
+
+	$scope.getList = function() {
+		UserService.list().then(function(data) {
+			// console.log(data)
+		}, function(reason) {
+			console.log(reason)
+		});
+	};
+
+	$scope.getList();
+
+
+	$scope.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+        return UserService.list();
+    }).withPaginationType('full_numbers');
+
+    $scope.dtColumns = [
+        DTColumnBuilder.newColumn('id').withTitle('ID'),
+        DTColumnBuilder.newColumn('username').withTitle('User name'),
+        DTColumnBuilder.newColumn('email').withTitle('Email')
+    ];
+
+};
+},{}],23:[function(require,module,exports){
+'use strict';
+
+var app = require('angular').module('myApp.directive',[]);
+
 app.directive('autoGridHeight', function($timeout, $window) {
 	return {
 		restrict: 'A',
@@ -5357,8 +5407,6 @@ app.directive('autoGridHeight', function($timeout, $window) {
 			// console.log(scope.gridOptions.totalItems);
 			// console.log(scope.gridOptions);
 			var setGridHeight = function() {
-			console.log($(element).parent("div").width());
-				
 				// console.log()
 				$(element).width($(element).parent("div").width());
 			};
@@ -5368,115 +5416,126 @@ app.directive('autoGridHeight', function($timeout, $window) {
 		}
 	}
 })
-module.exports = 'myApp.Ctrl';
-},{"./LoginController":20,"./test_todo":22,"angular":52}],22:[function(require,module,exports){
+
+module.exports = 'myApp.directive';
+
+},{"angular":53}],24:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, GRID_DEFAULT_OPTIONS, $timeout,DTOptionsBuilder, DTColumnBuilder) {
-
-	// TodoService.getSomething().then(function(data) {
-	// 	console.log(data)
-	// })
-	$scope.printInput = function() {
-		console.log($scope.inputFieldInput);
-	}
-	ToastService.show();
-	ToastService.warn();
-	ToastService.error();
-	console.log(BaseAPIService.init('user'))
-		// UserService.get(1).then(function(data) {
-		// 	console.log(data)
-		// }, function(reason) {
-		// 	console.log(reason)
-		// });
-
-
-	var girdOptions = {
-		columnDefs: [{
-			name: 'username',
-			field:'username',
-			minWidth: 200,
-			enableHiding: true,
-			enableSorting: true,
-		}, {
-			name: 'email',
-			minWidth: 200,
-			enableHiding: true,
-			enableSorting: true,
-		}],
-		onRegisterApi: function(gridApi) {
-			$scope.gridApi = gridApi;
-			console.log(gridApi);
-			$timeout(function() {
-				$scope.gridApi.core.handleWindowResize();
-			});
-			$scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-				// if (sortColumns.length == 0) {
-				//     paginationOptions.sort = null;
-				// } else {
-				//     paginationOptions.sort = sortColumns[0].sort.direction;
-				// }
-				// getList();
-			});
-			gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
-				GRID_DEFAULT_OPTIONS.paginationOptions.pageNumber = newPage;
-				GRID_DEFAULT_OPTIONS.paginationOptions.pageSize = pageSize;
-				getList();
-			});
+var app = require('angular').module('myApp.Srv',[]);
+app.constant('APP_SETTINGS',{
+	'server' : 'http://localhost:8081'
+});
+app.service('BaseAPIService',function(APP_SETTINGS,$http){
+	var URL;
+	return {
+		init:function(path){
+			URL = APP_SETTINGS.server + "/" + path;
+			this.URL = URL;
+			return this;
+		},
+		get:function(id){
+			return $http.get(URL+"/"+id);
+		},
+		list:function(params){
+			return $http.get(URL+"/"+"list");
 		}
-	};
-	$scope.gridOptions = angular.extend(girdOptions, GRID_DEFAULT_OPTIONS);
-	console.log($scope.gridOptions);
-
-	$scope.getList = function() {
-		UserService.list().then(function(data) {
-			// console.log(data)
-			$scope.gridOptions.data = data;
-			$scope.gridOptions.totalItems = data.length;
-		}, function(reason) {
-			console.log(reason)
-		});
-	};
-
-	$scope.getTableHeight = function() {
-		var rowHeight = $scope.gridOptions.rowHeight; // your row height
-		var headerHeight = 30; // your header height
-		var footerHeight = 55; // your footer height
-		return {
-			height: ($scope.gridOptions.data.length * rowHeight + headerHeight + footerHeight) + "px"
-		};
-	};
-	$scope.getList();
-
-	$scope.edit = function(id) {
-		console.log($scope.tp);
 	}
+});
+app.service('TodoService', require('./test_todo'));
+app.service('ToastService', require('./toastService'));
+app.service('UserService', require('./userService'));
 
-	$scope.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
-        return UserService.list();
-    }).withPaginationType('full_numbers');
 
-    $scope.dtColumns = [
-        DTColumnBuilder.newColumn('id').withTitle('ID'),
-        DTColumnBuilder.newColumn('username').withTitle('User name'),
-        DTColumnBuilder.newColumn('email').withTitle('Email')
-    ];
 
+
+module.exports = 'myApp.Srv';
+
+},{"./test_todo":25,"./toastService":26,"./userService":27,"angular":53}],25:[function(require,module,exports){
+'use strict';
+ 
+module.exports = function($http,$q) {
+  return {
+  	getSomething : function(){
+  		var deferred = $q.defer();
+  		$http.get("https://api.github.com/users/mralexgray/repos").then(function(res){
+  			deferred.resolve(res);
+  		})
+  		return deferred.promise; 
+  	}
+  }
 };
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+'use strict';
+
+module.exports = function() {
+	var duration = 3000,
+		callback = function(){},
+		toastclass = {
+			'info' : 'light-blue lighten-1',
+			'warn' : 'orange darken-1',
+			'error' : 'red darken-1'
+		}
+	return {
+		show: function() {
+			Materialize.toast('test message', duration, toastclass['info'], callback);
+		},
+
+		warn : function(){
+			Materialize.toast('test message', duration, toastclass['warn'], callback);
+
+		},
+		error:function(){
+			Materialize.toast('test message', duration, toastclass['error'], callback);
+			
+		}
+	}
+};
+},{}],27:[function(require,module,exports){
+'use strict';
+
+module.exports = function(BaseAPIService,$q) {
+	var path = 'user',
+		adapter = BaseAPIService.init(path),
+		callback = function(){};
+	return {
+		get:function(id){
+			var deferred = $q.defer();
+			adapter.get(id).then(function(data){
+				// console.log(data);
+				deferred.resolve(data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
+		},
+		list:function(params){
+			console.log(params);
+			var deferred = $q.defer();
+			adapter.list(params).then(function(data){
+				// console.log(data);
+				deferred.resolve(data.data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
+		}
+	}
+};
+},{}],28:[function(require,module,exports){
 'use strict';
 
 var angular = require('angular');
 var app = angular.module('myApp', [
-		require('./controller'),
-		require('./service'),
+		require('./app/controller'),
+		require('./app/service'),
+		require('./app/directive'),
 		require('./angular-materialize'),
 		require('./angular-route'),
 		require('./angular-sanitize'),
 		require('./angular-datatables'),
-		'ui.grid'
 	])
-	.run(function($rootScope) {
+	.run(function($rootScope,DTDefaultOptions) {
 		window.Ps = require('./perfect-scrollbar/jquery');
 		require('./perfect-scrollbar');
 		var leftNav = $('#slide-out');
@@ -5497,10 +5556,12 @@ var app = angular.module('myApp', [
 		$rootScope.$on("$destroy", function() {
 			$(window).off("resize.doResize"); //remove the handler added earlier
 		});
+
+		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
 	})
 
 
-},{"./angular-datatables":13,"./angular-materialize":15,"./angular-route":17,"./angular-sanitize":19,"./controller":21,"./perfect-scrollbar":24,"./perfect-scrollbar/jquery":25,"./service":47,"angular":52}],24:[function(require,module,exports){
+},{"./angular-datatables":13,"./angular-materialize":15,"./angular-route":17,"./angular-sanitize":19,"./app/controller":21,"./app/directive":23,"./app/service":24,"./perfect-scrollbar":29,"./perfect-scrollbar/jquery":30,"angular":53}],29:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5508,7 +5569,7 @@ var app = angular.module('myApp', [
 
 module.exports = require('./src/js/main');
 
-},{"./src/js/main":32}],25:[function(require,module,exports){
+},{"./src/js/main":37}],30:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5516,7 +5577,7 @@ module.exports = require('./src/js/main');
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":26}],26:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":31}],31:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5564,7 +5625,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":32,"../plugin/instances":43}],27:[function(require,module,exports){
+},{"../main":37,"../plugin/instances":48}],32:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5611,7 +5672,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],28:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5700,7 +5761,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],29:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5776,7 +5837,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],30:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5794,7 +5855,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],31:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5880,7 +5941,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":27,"./dom":28}],32:[function(require,module,exports){
+},{"./class":32,"./dom":33}],37:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5896,7 +5957,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":34,"./plugin/initialize":42,"./plugin/update":46}],33:[function(require,module,exports){
+},{"./plugin/destroy":39,"./plugin/initialize":47,"./plugin/update":51}],38:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5918,7 +5979,7 @@ module.exports = {
   wheelSpeed: 1
 };
 
-},{}],34:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5945,7 +6006,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":28,"../lib/helper":31,"./instances":43}],35:[function(require,module,exports){
+},{"../lib/dom":33,"../lib/helper":36,"./instances":48}],40:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6010,7 +6071,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":31,"../instances":43,"../update-geometry":44,"../update-scroll":45}],36:[function(require,module,exports){
+},{"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],41:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6118,7 +6179,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":28,"../../lib/helper":31,"../instances":43,"../update-geometry":44,"../update-scroll":45}],37:[function(require,module,exports){
+},{"../../lib/dom":33,"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],42:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6245,7 +6306,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/helper":31,"../instances":43,"../update-geometry":44,"../update-scroll":45}],38:[function(require,module,exports){
+},{"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],43:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6384,7 +6445,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":43,"../update-geometry":44,"../update-scroll":45}],39:[function(require,module,exports){
+},{"../instances":48,"../update-geometry":49,"../update-scroll":50}],44:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6404,7 +6465,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":43,"../update-geometry":44}],40:[function(require,module,exports){
+},{"../instances":48,"../update-geometry":49}],45:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6518,7 +6579,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":31,"../instances":43,"../update-geometry":44,"../update-scroll":45}],41:[function(require,module,exports){
+},{"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],46:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6691,7 +6752,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":43,"../update-geometry":44,"../update-scroll":45}],42:[function(require,module,exports){
+},{"../instances":48,"../update-geometry":49,"../update-scroll":50}],47:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6740,7 +6801,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":27,"../lib/helper":31,"./handler/click-rail":35,"./handler/drag-scrollbar":36,"./handler/keyboard":37,"./handler/mouse-wheel":38,"./handler/native-scroll":39,"./handler/selection":40,"./handler/touch":41,"./instances":43,"./update-geometry":44}],43:[function(require,module,exports){
+},{"../lib/class":32,"../lib/helper":36,"./handler/click-rail":40,"./handler/drag-scrollbar":41,"./handler/keyboard":42,"./handler/mouse-wheel":43,"./handler/native-scroll":44,"./handler/selection":45,"./handler/touch":46,"./instances":48,"./update-geometry":49}],48:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6851,7 +6912,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/dom":28,"../lib/event-manager":29,"../lib/guid":30,"../lib/helper":31,"./default-setting":33}],44:[function(require,module,exports){
+},{"../lib/dom":33,"../lib/event-manager":34,"../lib/guid":35,"../lib/helper":36,"./default-setting":38}],49:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6982,7 +7043,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":27,"../lib/dom":28,"../lib/helper":31,"./instances":43,"./update-scroll":45}],45:[function(require,module,exports){
+},{"../lib/class":32,"../lib/dom":33,"../lib/helper":36,"./instances":48,"./update-scroll":50}],50:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -7089,7 +7150,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":43}],46:[function(require,module,exports){
+},{"./instances":48}],51:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -7131,110 +7192,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":28,"../lib/helper":31,"./instances":43,"./update-geometry":44,"./update-scroll":45}],47:[function(require,module,exports){
-'use strict';
-
-var app = require('angular').module('myApp.Srv',[]);
-app.constant('APP_SETTINGS',{
-	'server' : 'http://localhost:8081'
-});
-app.service('BaseAPIService',function(APP_SETTINGS,$http){
-	var URL;
-	return {
-		init:function(path){
-			URL = APP_SETTINGS.server + "/" + path;
-			this.URL = URL;
-			return this;
-		},
-		get:function(id){
-			return $http.get(URL+"/"+id);
-		},
-		list:function(params){
-			return $http.get(URL+"/"+"list");
-		}
-	}
-});
-app.service('TodoService', require('./test_todo'));
-app.service('ToastService', require('./toastService'));
-app.service('UserService', require('./userService'));
-
-
-
-
-module.exports = 'myApp.Srv';
-
-},{"./test_todo":48,"./toastService":49,"./userService":50,"angular":52}],48:[function(require,module,exports){
-'use strict';
- 
-module.exports = function($http,$q) {
-  return {
-  	getSomething : function(){
-  		var deferred = $q.defer();
-  		$http.get("https://api.github.com/users/mralexgray/repos").then(function(res){
-  			deferred.resolve(res);
-  		})
-  		return deferred.promise; 
-  	}
-  }
-};
-},{}],49:[function(require,module,exports){
-'use strict';
-
-module.exports = function() {
-	var duration = 3000,
-		callback = function(){},
-		toastclass = {
-			'info' : 'light-blue lighten-1',
-			'warn' : 'orange darken-1',
-			'error' : 'red darken-1'
-		}
-	return {
-		show: function() {
-			Materialize.toast('test message', duration, toastclass['info'], callback);
-		},
-
-		warn : function(){
-			Materialize.toast('test message', duration, toastclass['warn'], callback);
-
-		},
-		error:function(){
-			Materialize.toast('test message', duration, toastclass['error'], callback);
-			
-		}
-	}
-};
-},{}],50:[function(require,module,exports){
-'use strict';
-
-module.exports = function(BaseAPIService,$q) {
-	var path = 'user',
-		adapter = BaseAPIService.init(path),
-		callback = function(){};
-	return {
-		get:function(id){
-			var deferred = $q.defer();
-			adapter.get(id).then(function(data){
-				// console.log(data);
-				deferred.resolve(data);
-			},function(reason){
-				deferred.reject(reason);
-			});
-			return deferred.promise;
-		},
-		list:function(params){
-			console.log(params);
-			var deferred = $q.defer();
-			adapter.list(params).then(function(data){
-				// console.log(data);
-				deferred.resolve(data.data);
-			},function(reason){
-				deferred.reject(reason);
-			});
-			return deferred.promise;
-		}
-	}
-};
-},{}],51:[function(require,module,exports){
+},{"../lib/dom":33,"../lib/helper":36,"./instances":48,"./update-geometry":49,"./update-scroll":50}],52:[function(require,module,exports){
 /**
  * @license AngularJS v1.4.8
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -36253,8 +36211,8 @@ $provide.value("$locale", {
 })(window, document);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":51}]},{},[23]);
+},{"./angular":52}]},{},[28]);

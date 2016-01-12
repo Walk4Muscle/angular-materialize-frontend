@@ -2,15 +2,15 @@
 
 var angular = require('angular');
 var app = angular.module('myApp', [
-		require('./controller'),
-		require('./service'),
+		require('./app/controller'),
+		require('./app/service'),
+		require('./app/directive'),
 		require('./angular-materialize'),
 		require('./angular-route'),
 		require('./angular-sanitize'),
 		require('./angular-datatables'),
-		'ui.grid'
 	])
-	.run(function($rootScope) {
+	.run(function($rootScope,DTDefaultOptions) {
 		window.Ps = require('./perfect-scrollbar/jquery');
 		require('./perfect-scrollbar');
 		var leftNav = $('#slide-out');
@@ -31,5 +31,7 @@ var app = angular.module('myApp', [
 		$rootScope.$on("$destroy", function() {
 			$(window).off("resize.doResize"); //remove the handler added earlier
 		});
+
+		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
 	})
 
