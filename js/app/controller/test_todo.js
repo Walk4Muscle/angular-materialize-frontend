@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, $timeout,DTOptionsBuilder, DTColumnBuilder) {
+module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, $timeout,DTOptionsBuilder, DTColumnBuilder,DT_OPTIONS) {
 
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -29,10 +29,11 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 	$scope.getList();
 
 
-	$scope.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
         return UserService.list();
-    }).withPaginationType('full_numbers');
-
+    }).withBootstrap();
+    $scope.dtOptions = angular.extend(dtOptions,DT_OPTIONS);
+	console.log($scope.dtOptions);
     $scope.dtColumns = [
         DTColumnBuilder.newColumn('id').withTitle('ID'),
         DTColumnBuilder.newColumn('username').withTitle('User name'),

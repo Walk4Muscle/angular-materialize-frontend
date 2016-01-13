@@ -5308,21 +5308,7 @@ module.exports = function($scope, ToastService) {
 },{}],21:[function(require,module,exports){
 'use strict';
 
-var app = require('angular').module('myApp.Ctrl', ['ui.grid', 'ui.grid.pagination','ui.grid.autoResize']);
-app.constant('GRID_DEFAULT_OPTIONS', {
-	paginationPageSizes: [10, 25, 50],
-	paginationPageSize: 10,
-	useExternalPagination: false,
-	enableVerticalScrollbar: 0,
-	enableGridMenu: true,
-	// enableGridMenu:false,
-	// rowHeight: 35,
-	paginationOptions: {
-		pageNumber: 1,
-		pageSize: 10,
-		sort: null
-	}
-});
+var app = require('angular').module('myApp.Ctrl', ['datatables','datatables.bootstrap']);
 
 
 app.controller('TestCtrl', require('./test_todo'));
@@ -5333,7 +5319,7 @@ module.exports = 'myApp.Ctrl';
 },{"./LoginController":20,"./test_todo":22,"angular":53}],22:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, $timeout,DTOptionsBuilder, DTColumnBuilder) {
+module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, $timeout,DTOptionsBuilder, DTColumnBuilder,DT_OPTIONS) {
 
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
@@ -5362,10 +5348,11 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 	$scope.getList();
 
 
-	$scope.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
         return UserService.list();
-    }).withPaginationType('full_numbers');
-
+    }).withBootstrap();
+    $scope.dtOptions = angular.extend(dtOptions,DT_OPTIONS);
+	console.log($scope.dtOptions);
     $scope.dtColumns = [
         DTColumnBuilder.newColumn('id').withTitle('ID'),
         DTColumnBuilder.newColumn('username').withTitle('User name'),
@@ -5558,7 +5545,35 @@ var app = angular.module('myApp', [
 		});
 
 		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
-	})
+	});
+
+app.constant('DT_OPTIONS', {
+	paginationType: 'full_numbers',
+	displayLength: 1,
+	language: {
+		"sEmptyTable"     : "No data available in table",
+		"sInfo"           : "Showing _START_ to _END_ of _TOTAL_ entries",
+		"sInfoEmpty"      : "Showing 0 to 0 of 0 entries",
+		"sInfoFiltered"   : "(filtered from _MAX_ total entries)",
+		"sInfoPostFix"    : "",
+		"sInfoThousands"  : ",",
+		"sLengthMenu"     : "Show _MENU_ entries",
+		"sLoadingRecords" : "Loading...",
+		"sProcessing"     : "Processing...",
+		"sSearch"         : "Search:",
+		"sZeroRecords"    : "No matching records found",
+		"oPaginate": {
+			"sFirst"    : "<<",
+			"sLast"     : ">>",
+			"sNext"     : ">",
+			"sPrevious" : "<"
+		},
+		"oAria": {
+			"sSortAscending"  : ": activate to sort column ascending",
+			"sSortDescending" : ": activate to sort column descending"
+		}
+	}
+});
 
 
 },{"./angular-datatables":13,"./angular-materialize":15,"./angular-route":17,"./angular-sanitize":19,"./app/controller":21,"./app/directive":23,"./app/service":24,"./perfect-scrollbar":29,"./perfect-scrollbar/jquery":30,"angular":53}],29:[function(require,module,exports){
