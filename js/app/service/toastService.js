@@ -9,16 +9,16 @@ module.exports = function() {
 			'error' : 'red darken-1'
 		}
 	return {
-		show: function() {
-			Materialize.toast('test message', duration, toastclass['info'], callback);
+		show: function(msg) {
+			Materialize.toast((msg?msg:'test message'), duration, toastclass['info'], callback);
 		},
 
-		warn : function(){
-			Materialize.toast('test message', duration, toastclass['warn'], callback);
+		warn : function(msg){
+			Materialize.toast((msg?msg:'test message'), duration, toastclass['warn'], callback);
 
 		},
-		error:function(){
-			Materialize.toast('test message', duration, toastclass['error'], callback);
+		error:function(msg){
+			Materialize.toast((msg?msg:'test message'), duration, toastclass['error'], callback);
 			
 		}
 	}

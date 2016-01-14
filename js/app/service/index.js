@@ -1,9 +1,7 @@
 'use strict';
 
 var app = require('angular').module('myApp.Srv',[]);
-app.constant('APP_SETTINGS',{
-	'server' : 'http://localhost:8081'
-});
+
 app.service('BaseAPIService',function(APP_SETTINGS,$http){
 	var URL;
 	return {

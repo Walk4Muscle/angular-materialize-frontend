@@ -5,12 +5,19 @@ var app = angular.module('myApp', [
 		require('./app/controller'),
 		require('./app/service'),
 		require('./app/directive'),
+		require('./app/settings'),
 		require('./angular-materialize'),
 		require('./angular-route'),
 		require('./angular-sanitize'),
 		require('./angular-datatables'),
 	])
-	.run(function($rootScope,DTDefaultOptions) {
+	.run(function($rootScope, $location,$routeParams, DTDefaultOptions) {
+		$rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
+			$rootScope.currentPath = $location.path();
+			console.log('Current route name: ' + $location.path());
+			// Get all URL parameter
+			console.log($routeParams);
+		});
 		window.Ps = require('./perfect-scrollbar/jquery');
 		require('./perfect-scrollbar');
 		var leftNav = $('#slide-out');
@@ -33,33 +40,16 @@ var app = angular.module('myApp', [
 		});
 
 		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
-	});
+	})
+	.config(function($routeProvider, $locationProvider) {
 
-app.constant('DT_OPTIONS', {
-	paginationType: 'full_numbers',
-	displayLength: 1,
-	language: {
-		"sEmptyTable"     : "No data available in table",
-		"sInfo"           : "Showing _START_ to _END_ of _TOTAL_ entries",
-		"sInfoEmpty"      : "Showing 0 to 0 of 0 entries",
-		"sInfoFiltered"   : "(filtered from _MAX_ total entries)",
-		"sInfoPostFix"    : "",
-		"sInfoThousands"  : ",",
-		"sLengthMenu"     : "Show _MENU_ entries",
-		"sLoadingRecords" : "Loading...",
-		"sProcessing"     : "Processing...",
-		"sSearch"         : "Search:",
-		"sZeroRecords"    : "No matching records found",
-		"oPaginate": {
-			"sFirst"    : "<<",
-			"sLast"     : ">>",
-			"sNext"     : ">",
-			"sPrevious" : "<"
-		},
-		"oAria": {
-			"sSortAscending"  : ": activate to sort column ascending",
-			"sSortDescending" : ": activate to sort column descending"
-		}
-	}
-});
-
+		$routeProvider
+			.when('/user', {
+				templateUrl: 'views/user-list.html',
+				controller: 'UserCtrl'
+			})
+			.otherwise({
+				redirectTo: '/'
+			})
+			// $locationProvider.html5Mode({enabled: true});	
+	})

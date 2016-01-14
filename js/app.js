@@ -5308,15 +5308,53 @@ module.exports = function($scope, ToastService) {
 },{}],21:[function(require,module,exports){
 'use strict';
 
+module.exports = function($scope, $location, $routeParams, ToastService, UserService ,DTOptionsBuilder, DTColumnBuilder,DT_OPTIONS) {
+
+	console.log($location)
+
+	$scope.printInput = function() {
+		console.log($scope.inputFieldInput);
+	}
+	ToastService.show("fuck");
+	ToastService.warn("the");
+	ToastService.error("world");
+
+	$scope.getList = function() {
+		UserService.list().then(function(data) {
+			// console.log(data)
+		}, function(reason) {
+			console.log(reason)
+		});
+	};
+
+	$scope.getList();
+
+
+	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+        return UserService.list();
+    }).withBootstrap();
+    $scope.dtOptions = angular.extend(dtOptions,DT_OPTIONS);
+	console.log($scope.dtOptions);
+    $scope.dtColumns = [
+        DTColumnBuilder.newColumn('id').withTitle('ID'),
+        DTColumnBuilder.newColumn('username').withTitle('User name'),
+        DTColumnBuilder.newColumn('email').withTitle('Email')
+    ];
+
+};
+},{}],22:[function(require,module,exports){
+'use strict';
+
 var app = require('angular').module('myApp.Ctrl', ['datatables','datatables.bootstrap']);
 
 
 app.controller('TestCtrl', require('./test_todo'));
 app.controller('LoginCtrl', require('./LoginController'));
+app.controller('UserCtrl', require('./UserController'));
 
 
 module.exports = 'myApp.Ctrl';
-},{"./LoginController":20,"./test_todo":22,"angular":53}],22:[function(require,module,exports){
+},{"./LoginController":20,"./UserController":21,"./test_todo":23,"angular":55}],23:[function(require,module,exports){
 'use strict';
 
 module.exports = function($scope, TodoService, ToastService, BaseAPIService, UserService, $timeout,DTOptionsBuilder, DTColumnBuilder,DT_OPTIONS) {
@@ -5360,7 +5398,7 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
     ];
 
 };
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('myApp.directive',[]);
@@ -5406,13 +5444,11 @@ app.directive('autoGridHeight', function($timeout, $window) {
 
 module.exports = 'myApp.directive';
 
-},{"angular":53}],24:[function(require,module,exports){
+},{"angular":55}],25:[function(require,module,exports){
 'use strict';
 
 var app = require('angular').module('myApp.Srv',[]);
-app.constant('APP_SETTINGS',{
-	'server' : 'http://localhost:8081'
-});
+
 app.service('BaseAPIService',function(APP_SETTINGS,$http){
 	var URL;
 	return {
@@ -5438,7 +5474,7 @@ app.service('UserService', require('./userService'));
 
 module.exports = 'myApp.Srv';
 
-},{"./test_todo":25,"./toastService":26,"./userService":27,"angular":53}],25:[function(require,module,exports){
+},{"./test_todo":26,"./toastService":27,"./userService":28,"angular":55}],26:[function(require,module,exports){
 'use strict';
  
 module.exports = function($http,$q) {
@@ -5452,7 +5488,7 @@ module.exports = function($http,$q) {
   	}
   }
 };
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = function() {
@@ -5464,21 +5500,21 @@ module.exports = function() {
 			'error' : 'red darken-1'
 		}
 	return {
-		show: function() {
-			Materialize.toast('test message', duration, toastclass['info'], callback);
+		show: function(msg) {
+			Materialize.toast((msg?msg:'test message'), duration, toastclass['info'], callback);
 		},
 
-		warn : function(){
-			Materialize.toast('test message', duration, toastclass['warn'], callback);
+		warn : function(msg){
+			Materialize.toast((msg?msg:'test message'), duration, toastclass['warn'], callback);
 
 		},
-		error:function(){
-			Materialize.toast('test message', duration, toastclass['error'], callback);
+		error:function(msg){
+			Materialize.toast((msg?msg:'test message'), duration, toastclass['error'], callback);
 			
 		}
 	}
 };
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = function(BaseAPIService,$q) {
@@ -5509,43 +5545,10 @@ module.exports = function(BaseAPIService,$q) {
 		}
 	}
 };
-},{}],28:[function(require,module,exports){
-'use strict';
+},{}],29:[function(require,module,exports){
+"use strict";
 
-var angular = require('angular');
-var app = angular.module('myApp', [
-		require('./app/controller'),
-		require('./app/service'),
-		require('./app/directive'),
-		require('./angular-materialize'),
-		require('./angular-route'),
-		require('./angular-sanitize'),
-		require('./angular-datatables'),
-	])
-	.run(function($rootScope,DTDefaultOptions) {
-		window.Ps = require('./perfect-scrollbar/jquery');
-		require('./perfect-scrollbar');
-		var leftNav = $('#slide-out');
-		var leftnav = $(".navbar-fixed").height();
-		var leftnavHeight = window.innerHeight - leftnav;
-		leftNav.height(leftnavHeight);
-		leftNav.perfectScrollbar();
-		$(window).on("resize.doResize", function() {
-			var leftnavHeight = window.innerHeight - leftnav;
-			leftNav.height(leftnavHeight);
-			leftNav.perfectScrollbar();
-
-			$rootScope.$apply(function() {
-				//do something to update current scope based on the new innerWidth and let angular update the view.
-			});
-		});
-
-		$rootScope.$on("$destroy", function() {
-			$(window).off("resize.doResize"); //remove the handler added earlier
-		});
-
-		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
-	});
+var app = require('angular').module('myApp.Constant', []);
 
 app.constant('DT_OPTIONS', {
 	paginationType: 'full_numbers',
@@ -5574,9 +5577,67 @@ app.constant('DT_OPTIONS', {
 		}
 	}
 });
+app.constant('APP_SETTINGS',{
+	'server' : 'http://localhost:8081'
+});
+module.exports = 'myApp.Constant';
+},{"angular":55}],30:[function(require,module,exports){
+'use strict';
 
+var angular = require('angular');
+var app = angular.module('myApp', [
+		require('./app/controller'),
+		require('./app/service'),
+		require('./app/directive'),
+		require('./app/settings'),
+		require('./angular-materialize'),
+		require('./angular-route'),
+		require('./angular-sanitize'),
+		require('./angular-datatables'),
+	])
+	.run(function($rootScope, $location,$routeParams, DTDefaultOptions) {
+		$rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
+			$rootScope.currentPath = $location.path();
+			console.log('Current route name: ' + $location.path());
+			// Get all URL parameter
+			console.log($routeParams);
+		});
+		window.Ps = require('./perfect-scrollbar/jquery');
+		require('./perfect-scrollbar');
+		var leftNav = $('#slide-out');
+		var leftnav = $(".navbar-fixed").height();
+		var leftnavHeight = window.innerHeight - leftnav;
+		leftNav.height(leftnavHeight);
+		leftNav.perfectScrollbar();
+		$(window).on("resize.doResize", function() {
+			var leftnavHeight = window.innerHeight - leftnav;
+			leftNav.height(leftnavHeight);
+			leftNav.perfectScrollbar();
 
-},{"./angular-datatables":13,"./angular-materialize":15,"./angular-route":17,"./angular-sanitize":19,"./app/controller":21,"./app/directive":23,"./app/service":24,"./perfect-scrollbar":29,"./perfect-scrollbar/jquery":30,"angular":53}],29:[function(require,module,exports){
+			$rootScope.$apply(function() {
+				//do something to update current scope based on the new innerWidth and let angular update the view.
+			});
+		});
+
+		$rootScope.$on("$destroy", function() {
+			$(window).off("resize.doResize"); //remove the handler added earlier
+		});
+
+		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
+	})
+	.config(function($routeProvider, $locationProvider) {
+
+		$routeProvider
+			.when('/user', {
+				templateUrl: 'views/user-list.html',
+				controller: 'UserCtrl'
+			})
+			.otherwise({
+				redirectTo: '/'
+			})
+			// $locationProvider.html5Mode({enabled: true});	
+	})
+},{"./angular-datatables":13,"./angular-materialize":15,"./angular-route":17,"./angular-sanitize":19,"./app/controller":22,"./app/directive":24,"./app/service":25,"./app/settings":29,"./perfect-scrollbar":31,"./perfect-scrollbar/jquery":32,"angular":55}],31:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5584,7 +5645,7 @@ app.constant('DT_OPTIONS', {
 
 module.exports = require('./src/js/main');
 
-},{"./src/js/main":37}],30:[function(require,module,exports){
+},{"./src/js/main":39}],32:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5592,7 +5653,7 @@ module.exports = require('./src/js/main');
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":31}],31:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":33}],33:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5640,7 +5701,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":37,"../plugin/instances":48}],32:[function(require,module,exports){
+},{"../main":39,"../plugin/instances":50}],34:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5687,7 +5748,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5776,7 +5837,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5852,7 +5913,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5870,7 +5931,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5956,7 +6017,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":32,"./dom":33}],37:[function(require,module,exports){
+},{"./class":34,"./dom":35}],39:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5972,7 +6033,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":39,"./plugin/initialize":47,"./plugin/update":51}],38:[function(require,module,exports){
+},{"./plugin/destroy":41,"./plugin/initialize":49,"./plugin/update":53}],40:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -5994,7 +6055,7 @@ module.exports = {
   wheelSpeed: 1
 };
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6021,7 +6082,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":33,"../lib/helper":36,"./instances":48}],40:[function(require,module,exports){
+},{"../lib/dom":35,"../lib/helper":38,"./instances":50}],42:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6086,7 +6147,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],41:[function(require,module,exports){
+},{"../../lib/helper":38,"../instances":50,"../update-geometry":51,"../update-scroll":52}],43:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6194,7 +6255,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":33,"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],42:[function(require,module,exports){
+},{"../../lib/dom":35,"../../lib/helper":38,"../instances":50,"../update-geometry":51,"../update-scroll":52}],44:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6321,7 +6382,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],43:[function(require,module,exports){
+},{"../../lib/helper":38,"../instances":50,"../update-geometry":51,"../update-scroll":52}],45:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6460,7 +6521,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":48,"../update-geometry":49,"../update-scroll":50}],44:[function(require,module,exports){
+},{"../instances":50,"../update-geometry":51,"../update-scroll":52}],46:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6480,7 +6541,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":48,"../update-geometry":49}],45:[function(require,module,exports){
+},{"../instances":50,"../update-geometry":51}],47:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6594,7 +6655,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":36,"../instances":48,"../update-geometry":49,"../update-scroll":50}],46:[function(require,module,exports){
+},{"../../lib/helper":38,"../instances":50,"../update-geometry":51,"../update-scroll":52}],48:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6767,7 +6828,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":48,"../update-geometry":49,"../update-scroll":50}],47:[function(require,module,exports){
+},{"../instances":50,"../update-geometry":51,"../update-scroll":52}],49:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6816,7 +6877,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":32,"../lib/helper":36,"./handler/click-rail":40,"./handler/drag-scrollbar":41,"./handler/keyboard":42,"./handler/mouse-wheel":43,"./handler/native-scroll":44,"./handler/selection":45,"./handler/touch":46,"./instances":48,"./update-geometry":49}],48:[function(require,module,exports){
+},{"../lib/class":34,"../lib/helper":38,"./handler/click-rail":42,"./handler/drag-scrollbar":43,"./handler/keyboard":44,"./handler/mouse-wheel":45,"./handler/native-scroll":46,"./handler/selection":47,"./handler/touch":48,"./instances":50,"./update-geometry":51}],50:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -6927,7 +6988,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/dom":33,"../lib/event-manager":34,"../lib/guid":35,"../lib/helper":36,"./default-setting":38}],49:[function(require,module,exports){
+},{"../lib/dom":35,"../lib/event-manager":36,"../lib/guid":37,"../lib/helper":38,"./default-setting":40}],51:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -7058,7 +7119,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":32,"../lib/dom":33,"../lib/helper":36,"./instances":48,"./update-scroll":50}],50:[function(require,module,exports){
+},{"../lib/class":34,"../lib/dom":35,"../lib/helper":38,"./instances":50,"./update-scroll":52}],52:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -7165,7 +7226,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":48}],51:[function(require,module,exports){
+},{"./instances":50}],53:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -7207,7 +7268,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":33,"../lib/helper":36,"./instances":48,"./update-geometry":49,"./update-scroll":50}],52:[function(require,module,exports){
+},{"../lib/dom":35,"../lib/helper":38,"./instances":50,"./update-geometry":51,"./update-scroll":52}],54:[function(require,module,exports){
 /**
  * @license AngularJS v1.4.8
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -36226,8 +36287,8 @@ $provide.value("$locale", {
 })(window, document);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],53:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":52}]},{},[28]);
+},{"./angular":54}]},{},[30]);
