@@ -6672,7 +6672,7 @@ nav ul a span.badge {
 
 .container {
   margin: 0 auto;
-  max-width: 1280px;
+  /*max-width: 1280px;*/
   width: 90%;
 }
 
@@ -6684,7 +6684,7 @@ nav ul a span.badge {
 
 @media only screen and (min-width: 993px) {
   .container {
-    width: 70%;
+    width: 85%;
   }
 }
 
@@ -8565,7 +8565,7 @@ a.waves-effect .waves-ripple {
   border: none;
   line-height: inherit;
   height: inherit;
-  margin: 0 1rem;
+  /*margin: 0 1rem;*/
 }
 
 .side-nav .collapsible-header i {
@@ -9494,7 +9494,7 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
   font-size: 0.8rem;
 }
 
-select {
+div.select-wrapper select {
   display: none;
 }
 
@@ -9821,7 +9821,7 @@ select {
 
 .side-nav li {
   float: none;
-  padding: 0 15px;
+  /*padding: 0 15px;*/
   line-height: 64px;
 }
 

@@ -5308,39 +5308,101 @@ module.exports = function($scope, ToastService) {
 },{}],21:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, $location, $routeParams, ToastService, UserService ,DTOptionsBuilder, DTColumnBuilder,DT_OPTIONS) {
+module.exports = function($scope, $location, $compile, $routeParams, ToastService, UserService, DTOptionsBuilder, DTColumnBuilder, DT_OPTIONS) {
 
-	console.log($location)
-
-	$scope.printInput = function() {
-		console.log($scope.inputFieldInput);
-	}
-	ToastService.show("fuck");
-	ToastService.warn("the");
-	ToastService.error("world");
-
-	$scope.getList = function() {
-		UserService.list().then(function(data) {
-			// console.log(data)
-		}, function(reason) {
-			console.log(reason)
-		});
-	};
-
-	$scope.getList();
+	// ToastService.show("fuck");
+	// ToastService.warn("the");
+	// ToastService.error("world");
+	$scope.users = {};
+	$scope.formdata = {};
+	$scope.edit = edit;
+	$scope.deleteUser = deleteUser;
+	$scope.submitForm = submitForm;
+	$scope.resetForm = resetForm;
+	$scope.dtInstance = {};
 
 
 	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
-        return UserService.list();
-    }).withBootstrap();
-    $scope.dtOptions = angular.extend(dtOptions,DT_OPTIONS);
-	console.log($scope.dtOptions);
-    $scope.dtColumns = [
-        DTColumnBuilder.newColumn('id').withTitle('ID'),
-        DTColumnBuilder.newColumn('username').withTitle('User name'),
-        DTColumnBuilder.newColumn('email').withTitle('Email')
-    ];
+		return UserService.list();
+	}).withBootstrap().withOption('createdRow', createdRow);;
+	$scope.dtOptions = angular.extend(dtOptions, DT_OPTIONS);
+	$scope.dtColumns = [
+		DTColumnBuilder.newColumn('id').withTitle('ID'),
+		DTColumnBuilder.newColumn('username').withTitle('User name'),
+		DTColumnBuilder.newColumn('email').withTitle('Email'),
+		DTColumnBuilder.newColumn(null).withTitle('Actions').notSortable()
+		.renderWith(actionsHtml)
+	];
 
+	function actionsHtml(data, type, full, meta) {
+		$scope.users[data.id] = data;
+		return '<button class="btn-floating cyan waves-effect waves-light" ng-click="edit(users[' + data.id + '])">' +
+			'   <i class="mdi-image-edit"></i>' +
+			'</button>&nbsp;' +
+			'<button class="btn-floating red waves-effect waves-light" ng-click="deleteUser(users[' + data.id + '])" )"="">' +
+			'   <i class="mdi-content-remove-circle-outline"></i>' +
+			'</button>';
+	}
+
+	function createdRow(row, data, dataIndex) {
+		// Recompiling so we can bind Angular directive to the DT
+		$compile(angular.element(row).contents())($scope);
+	}
+
+	function edit(user) {
+		$scope.formdata = angular.copy(user);
+		console.log(user)
+	}
+
+	function deleteUser(user) {
+		console.log('delete: ' + user)
+		UserService.delete(user).then(function(data){
+			if(data.status){
+				ToastService.show("Delete item success");
+				reloadData()
+			}else{
+				console.log(data);
+				ToastService.error("faild. "+data.error);
+			}
+		})
+
+	}
+
+	function submitForm(){
+		if($scope.formdata.id){
+			UserService.update($scope.formdata).then(function(data){
+				if(data.status){
+					ToastService.show("Update success");
+					reloadData()
+					resetForm();
+				}else{
+					console.log(data);
+					ToastService.error("faild. "+data.error);
+				}
+			})
+		}else{
+			// console.log($scope.formdata);return;
+			UserService.add($scope.formdata).then(function(data){
+				if(data.status){
+					ToastService.show("Insert success");
+					reloadData()
+					resetForm();
+				}else{
+					console.log(data);
+					ToastService.error("faild. "+data.error);
+				}
+			})
+		}
+	}
+
+	function resetForm(){
+		$scope.formdata = {};
+	}
+
+	function reloadData() {
+        var resetPaging = false;
+        $scope.dtInstance.reloadData(); //callback, resetPaging
+    }
 };
 },{}],22:[function(require,module,exports){
 'use strict';
@@ -5449,7 +5511,7 @@ module.exports = 'myApp.directive';
 
 var app = require('angular').module('myApp.Srv',[]);
 
-app.service('BaseAPIService',function(APP_SETTINGS,$http){
+app.service('BaseAPIService',function(APP_SETTINGS,$http,$q){
 	var URL;
 	return {
 		init:function(path){
@@ -5458,11 +5520,59 @@ app.service('BaseAPIService',function(APP_SETTINGS,$http){
 			return this;
 		},
 		get:function(id){
-			return $http.get(URL+"/"+id);
+			// return $http.get(URL+"/"+id);
+			var deferred = $q.defer();
+			$http.get(URL+"/"+id).then(function(data){
+				// console.log(data);
+				deferred.resolve(data.data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
 		},
 		list:function(params){
-			return $http.get(URL+"/"+"list");
-		}
+			// return $http.get(URL+"/"+"list");
+			var deferred = $q.defer();
+			$http.get(URL+"/"+"list").then(function(data){
+				// console.log(data);
+				deferred.resolve(data.data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
+		},
+		add:function(data){
+			var deferred = $q.defer();
+			$http.put(URL+"/",data).then(function(data){
+				// console.log(data);
+				deferred.resolve(data.data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
+		},
+		update:function(data){
+			// return $http.post(URL+"/"+data.id,data)
+			var deferred = $q.defer();
+			$http.post(URL+"/"+data.id,data).then(function(data){
+				// console.log(data);
+				deferred.resolve(data.data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
+		},
+		delete:function(id){
+			// return $http.post(URL+"/"+data.id,data)
+			var deferred = $q.defer();
+			$http.delete(URL+"/"+id).then(function(data){
+				// console.log(data);
+				deferred.resolve(data.data);
+			},function(reason){
+				deferred.reject(reason);
+			});
+			return deferred.promise;
+		},
 	}
 });
 app.service('TodoService', require('./test_todo'));
@@ -5517,32 +5627,34 @@ module.exports = function() {
 },{}],28:[function(require,module,exports){
 'use strict';
 
-module.exports = function(BaseAPIService,$q) {
+module.exports = function(BaseAPIService) {
 	var path = 'user',
 		adapter = BaseAPIService.init(path),
 		callback = function(){};
 	return {
 		get:function(id){
-			var deferred = $q.defer();
-			adapter.get(id).then(function(data){
-				// console.log(data);
-				deferred.resolve(data);
-			},function(reason){
-				deferred.reject(reason);
-			});
-			return deferred.promise;
+			// var deferred = $q.defer();
+			// adapter.get(id).then(function(data){
+			// 	// console.log(data);
+			// 	deferred.resolve(data);
+			// },function(reason){
+			// 	deferred.reject(reason);
+			// });
+			// return deferred.promise;
+			return adapter.get(id);
 		},
 		list:function(params){
-			console.log(params);
-			var deferred = $q.defer();
-			adapter.list(params).then(function(data){
-				// console.log(data);
-				deferred.resolve(data.data);
-			},function(reason){
-				deferred.reject(reason);
-			});
-			return deferred.promise;
-		}
+			return adapter.list(params);
+		},
+		update:function(data){
+			return adapter.update(data);
+		},
+		add:function(data){
+			return adapter.add(data);
+		},
+		delete:function(data){
+			return adapter.delete(data.id);
+		},
 	}
 };
 },{}],29:[function(require,module,exports){
@@ -5552,7 +5664,7 @@ var app = require('angular').module('myApp.Constant', []);
 
 app.constant('DT_OPTIONS', {
 	paginationType: 'full_numbers',
-	displayLength: 1,
+	displayLength: 10,
 	language: {
 		"sEmptyTable"     : "No data available in table",
 		"sInfo"           : "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -5575,7 +5687,8 @@ app.constant('DT_OPTIONS', {
 			"sSortAscending"  : ": activate to sort column ascending",
 			"sSortDescending" : ": activate to sort column descending"
 		}
-	}
+	},
+
 });
 app.constant('APP_SETTINGS',{
 	'server' : 'http://localhost:8081'
@@ -5626,7 +5739,7 @@ var app = angular.module('myApp', [
 		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
 	})
 	.config(function($routeProvider, $locationProvider) {
-
+		// when functional models finished, change the route to dynamic
 		$routeProvider
 			.when('/user', {
 				templateUrl: 'views/user-list.html',

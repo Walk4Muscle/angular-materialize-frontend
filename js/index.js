@@ -42,7 +42,7 @@ var app = angular.module('myApp', [
 		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
 	})
 	.config(function($routeProvider, $locationProvider) {
-
+		// when functional models finished, change the route to dynamic
 		$routeProvider
 			.when('/user', {
 				templateUrl: 'views/user-list.html',

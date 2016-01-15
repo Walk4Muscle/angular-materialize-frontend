@@ -4,7 +4,7 @@ var app = require('angular').module('myApp.Constant', []);
 
 app.constant('DT_OPTIONS', {
 	paginationType: 'full_numbers',
-	displayLength: 1,
+	displayLength: 10,
 	language: {
 		"sEmptyTable"     : "No data available in table",
 		"sInfo"           : "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -27,7 +27,8 @@ app.constant('DT_OPTIONS', {
 			"sSortAscending"  : ": activate to sort column ascending",
 			"sSortDescending" : ": activate to sort column descending"
 		}
-	}
+	},
+
 });
 app.constant('APP_SETTINGS',{
 	'server' : 'http://localhost:8081'
