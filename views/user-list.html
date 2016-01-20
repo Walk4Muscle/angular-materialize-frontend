@@ -1,5 +1,9 @@
 <h5 class="breadcrumbs-title">User</h5>
+<div id="table_content" ng-init="isTable=true" ng-show="isTable">
 <table datatable="" auto-grid-width dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance" class="row-border hover"></table>
+</div>
+
+<div id="form_content" ng-hide="isTable">
 <form name="userForm" ng-submit="submitForm()" accept-charset="utf-8">
 	<input type="hidden" ng-model="formdata.id" />
 	<div input-field>
@@ -15,8 +19,12 @@
 		<button class="btn waves-effect waves-light cyan darken-1" type="submit" name="Submit">Submit
 			<i class="mdi-navigation-check"></i>
 		</button>
-		<button class="btn waves-effect waves-light orange darken-1" type="reset" ng-click="resetForm()" name="Cancel">Cancel
+		<button class="btn waves-effect waves-light red darken-1" type="reset" ng-click="resetForm()" name="reset">Reset
+			<i class="mdi-navigation-refresh"></i>
+		</button>
+		<button class="btn waves-effect waves-light orange darken-1" type="reset" ng-click="isTable=true;resetForm()" name="Cancel">Cancel
 			<i class="mdi-navigation-close"></i>
 		</button>
 	</div>
 </form>
+</div>

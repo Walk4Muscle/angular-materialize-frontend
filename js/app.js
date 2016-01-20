@@ -5315,6 +5315,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	// ToastService.error("world");
 	$scope.users = {};
 	$scope.formdata = {};
+	// $scope.isTable = true;
 	$scope.edit = edit;
 	$scope.deleteUser = deleteUser;
 	$scope.submitForm = submitForm;
@@ -5351,6 +5352,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 
 	function edit(user) {
 		$scope.formdata = angular.copy(user);
+        $scope.isTable=false;
 		console.log(user)
 	}
 
@@ -5396,11 +5398,20 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	}
 
 	function resetForm(){
-		$scope.formdata = {};
+		if($scope.formdata.id){
+			$scope.formdata = $scope.formdata.map(function(obj){
+				if(obj.key !== 'id'){
+					obj.value=null;
+				}
+			})
+		}else{
+			$scope.formdata = {};
+		}
 	}
 
 	function reloadData() {
         var resetPaging = false;
+        $scope.isTable=true;
         $scope.dtInstance.reloadData(); //callback, resetPaging
     }
 };
