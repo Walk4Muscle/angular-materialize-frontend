@@ -31,7 +31,9 @@ ul.side-nav.leftside-navigation {
     padding: 0 15px;
 }
 
-
+.card-border{
+  border:1px solid #cecece;
+}
 /*loading css*/
 .loader {
   font-size: 90px;

@@ -5309,7 +5309,6 @@ module.exports = function($scope, ToastService) {
 'use strict';
 
 module.exports = function($scope, $location, $compile, $routeParams, ToastService, UserService, DTOptionsBuilder, DTColumnBuilder, DT_OPTIONS) {
-
 	// ToastService.show("fuck");
 	// ToastService.warn("the");
 	// ToastService.error("world");
@@ -5320,12 +5319,15 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	$scope.deleteUser = deleteUser;
 	$scope.submitForm = submitForm;
 	$scope.resetForm = resetForm;
+	$scope.additme = additme;
 	$scope.dtInstance = {};
+	$scope.collapseSide('user-model');
 
 
 	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
 		return UserService.list();
-	}).withBootstrap().withOption('createdRow', createdRow);;
+	}).withBootstrap()
+	.withOption('createdRow', createdRow);
 	$scope.dtOptions = angular.extend(dtOptions, DT_OPTIONS);
 	$scope.dtColumns = [
 		DTColumnBuilder.newColumn('id').withTitle('ID'),
@@ -5353,7 +5355,6 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	function edit(user) {
 		$scope.formdata = angular.copy(user);
         $scope.isTable=false;
-		console.log(user)
 	}
 
 	function deleteUser(user) {
@@ -5390,7 +5391,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 					reloadData()
 					resetForm();
 				}else{
-					console.log(data);
+					// console.log(data);
 					ToastService.error("faild. "+data.error);
 				}
 			})
@@ -5399,21 +5400,25 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 
 	function resetForm(){
 		if($scope.formdata.id){
-			$scope.formdata = $scope.formdata.map(function(obj){
-				if(obj.key !== 'id'){
-					obj.value=null;
-				}
-			})
+			// $scope.formdata = $scope.formdata.map(function(obj){
+			// 	if(obj.key !== 'id'){
+			// 		obj.value=null;
+			// 	}
+			// })
 		}else{
 			$scope.formdata = {};
 		}
 	}
 
 	function reloadData() {
-        var resetPaging = false;
         $scope.isTable=true;
-        $scope.dtInstance.reloadData(); //callback, resetPaging
+        $scope.dtInstance.rerender(); //callback, resetPaging
     }
+
+    function additme(){
+    	$scope.isTable = false;
+    }
+
 };
 },{}],22:[function(require,module,exports){
 'use strict';
@@ -5435,9 +5440,7 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 	// TodoService.getSomething().then(function(data) {
 	// 	console.log(data)
 	// })
-	$scope.printInput = function() {
-		console.log($scope.inputFieldInput);
-	}
+
 	ToastService.show();
 	ToastService.warn();
 	ToastService.error();
@@ -5447,29 +5450,6 @@ module.exports = function($scope, TodoService, ToastService, BaseAPIService, Use
 		// }, function(reason) {
 		// 	console.log(reason)
 		// });
-
-	$scope.getList = function() {
-		UserService.list().then(function(data) {
-			// console.log(data)
-		}, function(reason) {
-			console.log(reason)
-		});
-	};
-
-	$scope.getList();
-
-
-	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
-        return UserService.list();
-    }).withBootstrap();
-    $scope.dtOptions = angular.extend(dtOptions,DT_OPTIONS);
-	console.log($scope.dtOptions);
-    $scope.dtColumns = [
-        DTColumnBuilder.newColumn('id').withTitle('ID'),
-        DTColumnBuilder.newColumn('username').withTitle('User name'),
-        DTColumnBuilder.newColumn('email').withTitle('Email')
-    ];
-
 };
 },{}],24:[function(require,module,exports){
 'use strict';
@@ -5616,7 +5596,7 @@ module.exports = function() {
 	var duration = 3000,
 		callback = function(){},
 		toastclass = {
-			'info' : 'light-blue lighten-1',
+			'info' : 'green darken-1',
 			'warn' : 'orange darken-1',
 			'error' : 'red darken-1'
 		}
@@ -5725,6 +5705,7 @@ var app = angular.module('myApp', [
 			console.log('Current route name: ' + $location.path());
 			// Get all URL parameter
 			console.log($routeParams);
+			console.log($rootScope.currentParent)
 		});
 		window.Ps = require('./perfect-scrollbar/jquery');
 		require('./perfect-scrollbar');
@@ -5747,6 +5728,7 @@ var app = angular.module('myApp', [
 			$(window).off("resize.doResize"); //remove the handler added earlier
 		});
 
+		$rootScope.collapseSide = collapseSide;
 		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
 	})
 	.config(function($routeProvider, $locationProvider) {
@@ -5754,13 +5736,22 @@ var app = angular.module('myApp', [
 		$routeProvider
 			.when('/user', {
 				templateUrl: 'views/user-list.html',
-				controller: 'UserCtrl'
+				controller: 'UserCtrl',
+				resolve:function(){
+					$scope.currentParent='user';
+				}
 			})
 			.otherwise({
 				redirectTo: '/'
 			})
 			// $locationProvider.html5Mode({enabled: true});	
 	})
+
+function collapseSide(domId){
+	$('.side-nav ul.collapsible-accordion .collapsible-header').removeClass('active');
+	$('#'+domId+' .collapsible-header').addClass('active');
+	$('#'+domId).collapsible();
+}
 },{"./angular-datatables":13,"./angular-materialize":15,"./angular-route":17,"./angular-sanitize":19,"./app/controller":22,"./app/directive":24,"./app/service":25,"./app/settings":29,"./perfect-scrollbar":31,"./perfect-scrollbar/jquery":32,"angular":55}],31:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License

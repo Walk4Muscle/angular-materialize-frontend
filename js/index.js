@@ -17,6 +17,7 @@ var app = angular.module('myApp', [
 			console.log('Current route name: ' + $location.path());
 			// Get all URL parameter
 			console.log($routeParams);
+			console.log($rootScope.currentParent)
 		});
 		window.Ps = require('./perfect-scrollbar/jquery');
 		require('./perfect-scrollbar');
@@ -39,6 +40,7 @@ var app = angular.module('myApp', [
 			$(window).off("resize.doResize"); //remove the handler added earlier
 		});
 
+		$rootScope.collapseSide = collapseSide;
 		DTDefaultOptions.setLoadingTemplate('<div class="loader">Loading...</div>');
 	})
 	.config(function($routeProvider, $locationProvider) {
@@ -46,10 +48,19 @@ var app = angular.module('myApp', [
 		$routeProvider
 			.when('/user', {
 				templateUrl: 'views/user-list.html',
-				controller: 'UserCtrl'
+				controller: 'UserCtrl',
+				resolve:function(){
+					$scope.currentParent='user';
+				}
 			})
 			.otherwise({
 				redirectTo: '/'
 			})
 			// $locationProvider.html5Mode({enabled: true});	
 	})
+
+function collapseSide(domId){
+	$('.side-nav ul.collapsible-accordion .collapsible-header').removeClass('active');
+	$('#'+domId+' .collapsible-header').addClass('active');
+	$('#'+domId).collapsible();
+}

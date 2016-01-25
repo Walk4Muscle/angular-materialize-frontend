@@ -42,7 +42,7 @@
 		<!-- /////////////////////// -->
 		<!-- left side nav start-->
 		<div class="main">
-			<ul id="slide-out" class="side-nav fixed leftside-navigation ps-container ps-active-y" style="240px">
+			<ul id="slide-out" class="side-nav fixed left side-navigation ps-container ps-active-y" style="240px">
 				<li class="blod selected"><a href="#!"><i class="mdi-action-dashboard"></i>Dashboard</a></li>
 				<li><a href="#!"><i class="mdi-action-description"></i>Tables</a></li>
 				<li class="no-padding">
@@ -62,13 +62,13 @@
 				</li>
 				<!-- RBAC Model-->
 				<li class="no-padding">
-					<ul class="collapsible collapsible-accordion">
+					<ul class="collapsible collapsible-accordion" id="user-model">
 						<li>
 							<a class="collapsible-header"><i class="mdi-action-account-circle"></i>Access Control<i class="mdi-hardware-keyboard-arrow-down right"></i></a>
 							<div class="collapsible-body">
 								<ul>
 									<li ng-class="{'selected':(currentPath=='/user')}"><a href="#/user">User</a></li>
-									<li><a href="#!">Second</a></li>
+									<li ng-class="{'selected':(currentPath=='/role')}"><a href="#/role">Role</a></li>
 									<li><a href="#!">Third</a></li>
 									<li><a href="#!">Fourth</a></li>
 								</ul>

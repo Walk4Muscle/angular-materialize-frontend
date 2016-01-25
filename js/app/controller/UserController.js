@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function($scope, $location, $compile, $routeParams, ToastService, UserService, DTOptionsBuilder, DTColumnBuilder, DT_OPTIONS) {
-
 	// ToastService.show("fuck");
 	// ToastService.warn("the");
 	// ToastService.error("world");
@@ -12,12 +11,15 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	$scope.deleteUser = deleteUser;
 	$scope.submitForm = submitForm;
 	$scope.resetForm = resetForm;
+	$scope.additme = additme;
 	$scope.dtInstance = {};
+	$scope.collapseSide('user-model');
 
 
 	var dtOptions = DTOptionsBuilder.fromFnPromise(function() {
 		return UserService.list();
-	}).withBootstrap().withOption('createdRow', createdRow);;
+	}).withBootstrap()
+	.withOption('createdRow', createdRow);
 	$scope.dtOptions = angular.extend(dtOptions, DT_OPTIONS);
 	$scope.dtColumns = [
 		DTColumnBuilder.newColumn('id').withTitle('ID'),
@@ -45,7 +47,6 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	function edit(user) {
 		$scope.formdata = angular.copy(user);
         $scope.isTable=false;
-		console.log(user)
 	}
 
 	function deleteUser(user) {
@@ -82,7 +83,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 					reloadData()
 					resetForm();
 				}else{
-					console.log(data);
+					// console.log(data);
 					ToastService.error("faild. "+data.error);
 				}
 			})
@@ -91,19 +92,23 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 
 	function resetForm(){
 		if($scope.formdata.id){
-			$scope.formdata = $scope.formdata.map(function(obj){
-				if(obj.key !== 'id'){
-					obj.value=null;
-				}
-			})
+			// $scope.formdata = $scope.formdata.map(function(obj){
+			// 	if(obj.key !== 'id'){
+			// 		obj.value=null;
+			// 	}
+			// })
 		}else{
 			$scope.formdata = {};
 		}
 	}
 
 	function reloadData() {
-        var resetPaging = false;
         $scope.isTable=true;
-        $scope.dtInstance.reloadData(); //callback, resetPaging
+        $scope.dtInstance.rerender(); //callback, resetPaging
     }
+
+    function additme(){
+    	$scope.isTable = false;
+    }
+
 };

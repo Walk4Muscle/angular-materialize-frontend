@@ -1,30 +1,44 @@
 <h5 class="breadcrumbs-title">User</h5>
 <div id="table_content" ng-init="isTable=true" ng-show="isTable">
-<table datatable="" auto-grid-width dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance" class="row-border hover"></table>
+	<div class="card card-border">
+		<div class="card-content">
+		<span class="card-title">
+		<!-- User List -->
+			<button class="btn-floating green darken-1 waves-effect waves-light right" ng-click="additme()" tooltipped data-position="bottom" data-delay="50" data-tooltip="add a new user">
+				<i class="mdi-content-add" ></i>
+			</button>
+		</span>
+		<table datatable="" auto-grid-width dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance" class="row-border hover"></table>
+	</div>
 </div>
-
+</div>
 <div id="form_content" ng-hide="isTable">
-<form name="userForm" ng-submit="submitForm()" accept-charset="utf-8">
-	<input type="hidden" ng-model="formdata.id" />
-	<div input-field>
-		<input type="text" ng-model="formdata.username" length="150">
-		<label>Username</label>
+<div class="card card-border">
+	<div class="card-content">
+		<span class="card-title">User Form</span>
+		<form name="userForm" ng-submit="submitForm()" accept-charset="utf-8">
+			<input type="hidden" ng-model="formdata.id" />
+			<div input-field>
+				<input type="text" ng-model="formdata.username" length="150">
+				<label>Username</label>
+			</div>
+			<div input-field>
+				<input type="email" name="email" ng-model="formdata.email" length="150" required>
+				<label>Email</label>
+				<p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="red-text">Enter a valid email.</p>
+			</div>
+			<div class="right-align">
+				<button class="btn waves-effect waves-light green darken-1" type="submit" name="Submit">Submit
+				<i class="mdi-navigation-check"></i>
+				</button>
+				<button class="btn waves-effect waves-light red darken-1" type="reset" ng-click="resetForm()" name="reset">Reset
+				<i class="mdi-navigation-refresh"></i>
+				</button>
+				<button class="btn waves-effect waves-light orange darken-1" type="reset" ng-click="isTable=true;resetForm()" name="Cancel">Cancel
+				<i class="mdi-navigation-close"></i>
+				</button>
+			</div>
+		</form>
 	</div>
-	<div input-field>
-		<input type="email" name="email" ng-model="formdata.email" length="150" required>
-		<label>Email</label>
-		<p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="red-text">Enter a valid email.</p>
-	</div>
-	<div>
-		<button class="btn waves-effect waves-light cyan darken-1" type="submit" name="Submit">Submit
-			<i class="mdi-navigation-check"></i>
-		</button>
-		<button class="btn waves-effect waves-light red darken-1" type="reset" ng-click="resetForm()" name="reset">Reset
-			<i class="mdi-navigation-refresh"></i>
-		</button>
-		<button class="btn waves-effect waves-light orange darken-1" type="reset" ng-click="isTable=true;resetForm()" name="Cancel">Cancel
-			<i class="mdi-navigation-close"></i>
-		</button>
-	</div>
-</form>
+</div>
 </div>

@@ -4,7 +4,7 @@ module.exports = function() {
 	var duration = 3000,
 		callback = function(){},
 		toastclass = {
-			'info' : 'light-blue lighten-1',
+			'info' : 'green darken-1',
 			'warn' : 'orange darken-1',
 			'error' : 'red darken-1'
 		}
