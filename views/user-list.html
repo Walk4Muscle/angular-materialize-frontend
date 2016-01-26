@@ -4,9 +4,14 @@
 		<div class="card-content">
 		<span class="card-title">
 		<!-- User List -->
+			
 			<button class="btn-floating green darken-1 waves-effect waves-light right" ng-click="additme()" tooltipped data-position="bottom" data-delay="50" data-tooltip="add a new user">
 				<i class="mdi-content-add" ></i>
 			</button>
+			<button class="btn-floating blue darken-1 waves-effect waves-light right" ng-click="reloadData()" tooltipped data-position="bottom" data-delay="50" data-tooltip="refresh">
+				<i class="mdi-navigation-refresh" ></i>
+			</button>
+			
 		</span>
 		<table datatable="" auto-grid-width dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance" class="row-border hover"></table>
 	</div>

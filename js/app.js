@@ -5320,6 +5320,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 	$scope.submitForm = submitForm;
 	$scope.resetForm = resetForm;
 	$scope.additme = additme;
+	$scope.reloadData = reloadData;
 	$scope.dtInstance = {};
 	$scope.collapseSide('user-model');
 
@@ -5362,7 +5363,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 		UserService.delete(user).then(function(data){
 			if(data.status){
 				ToastService.show("Delete item success");
-				reloadData()
+				rerenderTable()
 			}else{
 				console.log(data);
 				ToastService.error("faild. "+data.error);
@@ -5376,7 +5377,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 			UserService.update($scope.formdata).then(function(data){
 				if(data.status){
 					ToastService.show("Update success");
-					reloadData()
+					rerenderTable()
 					resetForm();
 				}else{
 					console.log(data);
@@ -5388,7 +5389,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 			UserService.add($scope.formdata).then(function(data){
 				if(data.status){
 					ToastService.show("Insert success");
-					reloadData()
+					rerenderTable()
 					resetForm();
 				}else{
 					// console.log(data);
@@ -5410,7 +5411,7 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
 		}
 	}
 
-	function reloadData() {
+	function rerenderTable() {
         $scope.isTable=true;
         $scope.dtInstance.rerender(); //callback, resetPaging
     }
@@ -5419,6 +5420,11 @@ module.exports = function($scope, $location, $compile, $routeParams, ToastServic
     	$scope.isTable = false;
     }
 
+    function reloadData(){
+    	rerenderTable()
+    	// var resetPaging = false;
+        // $scope.dtInstance.reloadData(function(){}, resetPaging);
+    }
 };
 },{}],22:[function(require,module,exports){
 'use strict';
